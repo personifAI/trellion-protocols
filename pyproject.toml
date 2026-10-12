@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 PersonifAI LLC
+
+[project]
+name = "trellion-protocols"
+version = "0.1.0"
+description = "The interface trellion offers to add-ons: Protocols, row shapes, table/column names, schema revision. No implementations."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+# Both land in the wheel's .dist-info/licenses/ (tests/test_package.py and CI
+# check the built wheel).
+license-files = ["LICENSE", "NOTICE"]
+authors = [
+    {name = "PersonifAI", email = "contact@noomesh.ai"},
+]
+classifiers = [
+    "Typing :: Typed",
+]
+# Nothing: standard library only (tests/test_package.py holds this).
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.2"]
+
+[project.urls]
+Homepage = "https://github.com/personifai/trellion-protocols"
+Repository = "https://github.com/personifai/trellion-protocols"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/trellion_protocols"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

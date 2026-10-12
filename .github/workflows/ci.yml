@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 PersonifAI LLC
+
+name: CI
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Build the wheel first and test against the INSTALLED wheel, so the
+      # LICENSE/NOTICE check and the import both see what ships.
+      - name: Build and install the wheel
+        run: |
+          python -m pip install --upgrade pip
+          pip wheel --no-deps -w dist .
+          pip install dist/*.whl "pytest>=8.2"
+          echo "TP_WHEEL=$(ls "$PWD"/dist/*.whl)" >> "$GITHUB_ENV"
+      # Includes the SPDX-header check (test_every_file_carries_the_apache_spdx_header)
+      # and the content rule (test_content_describes_only_trellions_side).
+      - name: Test
+        run: |
+          cd tests && python -m pytest -q -rs .. -p no:cacheprovider
+          python -c "import trellion_protocols, sys; assert '/site-packages/' in trellion_protocols.__file__, trellion_protocols.__file__"
+
+  # This repository is public, so its CI reaches nothing private: no private
+  # checkout, no PAT. Two scans over the checked-out tree, generic patterns only:
+  #   1. scripts/leak-scan.sh - other private product names, private-network
+  #      addresses, internal host suffixes, credential shapes;
+  #   2. scripts/public-leak-scan.sh - secret shapes, private keys, tailnet/LAN
+  #      addresses, real home paths, key/env files.
+  # The scan against the private lists (fleet hostmap, maintainer literals) runs
+  # in the private snapshot tooling before every push to this repository.
+  leak:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Generic scan
+        run: bash scripts/leak-scan.sh .
+      - name: Public leak scan
+        run: bash scripts/public-leak-scan.sh .
