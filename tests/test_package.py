@@ -180,7 +180,8 @@ os.environ = Env(os.environ)
 before = set(sys.modules)
 sys.addaudithook(hook)
 import trellion_protocols, trellion_protocols.addons, trellion_protocols.host
-import trellion_protocols.schema, trellion_protocols.stores, trellion_protocols.types
+import trellion_protocols.embedding_text, trellion_protocols.schema
+import trellion_protocols.stores, trellion_protocols.types
 new = sorted(m for m in set(sys.modules) - before if not m.startswith("trellion_protocols"))
 print(repr({"events": events, "env": Env.reads, "new_modules": new}))
 """
