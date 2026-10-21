@@ -21,7 +21,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8.2"]
+dev = ["pytest>=9.0.3"]
 
 [project.urls]
 Homepage = "https://github.com/personifai/trellion-protocols"
