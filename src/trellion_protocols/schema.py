@@ -19,7 +19,7 @@ from __future__ import annotations
 from typing import Final, Mapping
 
 #: Head of trellion's Alembic chain. Bump with every migration.
-SCHEMA_REV: Final[str] = "105_doc_hold"
+SCHEMA_REV: Final[str] = "106_embedding_provenance"
 
 #: Alembic's version table for the trellion chain, and the schema it lives in.
 VERSION_TABLE: Final[str] = "alembic_version_memory"
@@ -66,11 +66,12 @@ TABLES: Final[Mapping[str, frozenset[str]]] = {
     }),
     ENTITY_EMBEDDINGS: frozenset({
         "entity_id", "embedding", "computed_at", "generation", "embedding_model",
-        "embedding_dim",
+        "embedding_dim", "embedding_next", "embedding_next_model",
     }),
     ENTITY_CLUSTERS: frozenset({
         "cluster_id", "name", "level", "parent_cluster_id", "summary", "centroid",
         "member_count", "computed_at", "generation", "embedding_model", "embedding_dim",
+        "embedding_next", "embedding_next_model",
     }),
     ENTITY_CLUSTER_MEMBERS: frozenset({"entity_id", "cluster_id", "membership_score"}),
     ENTITY_GRAPH_SIGNALS: frozenset({
@@ -94,13 +95,14 @@ TABLES: Final[Mapping[str, frozenset[str]]] = {
         "created_at", "updated_at", "user_id", "org_id", "kind", "thread_id",
         "turn_index", "run_id", "provenance", "evidence", "usefulness", "status",
         "last_validated_at", "last_recalled_at", "recall_count", "expires_at",
-        "embedding_model", "embedding_dim",
+        "embedding_model", "embedding_dim", "embedding_next", "embedding_next_model",
     }),
     EPISODES: frozenset({
         "id", "persona_id", "record_type", "index_name", "content_summary",
         "prominence_score", "access_count", "first_accessed_at", "last_accessed_at",
         "avg_search_score", "is_tombstoned", "metadata", "created_at", "updated_at",
-        "embedding", "user_id",
+        "embedding", "user_id", "embedding_model", "embedding_dim", "embedding_next",
+        "embedding_next_model",
     }),
 }
 
