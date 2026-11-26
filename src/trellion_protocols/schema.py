@@ -9,6 +9,10 @@ does so against THIS description, never against trellion's models.
 
 * :data:`SCHEMA_REV` is the head revision of that chain. trellion's
   contract tests fail when a migration is added and this is not bumped.
+* Revision 107 adds three tables (``page_usage``, ``kb_specs``,
+  ``page_dispositions``) that are trellion's own bookkeeping. They are not
+  listed in :data:`TABLES` (which names the tables an add-on may touch), so an
+  add-on reads or writes them only by revising this contract first.
 * :data:`TABLES` lists, per table, every column the migrations create. The
   database-backed contract test holds it equal to a freshly migrated
   database.
@@ -19,7 +23,7 @@ from __future__ import annotations
 from typing import Final, Mapping
 
 #: Head of trellion's Alembic chain. Bump with every migration.
-SCHEMA_REV: Final[str] = "106_embedding_provenance"
+SCHEMA_REV: Final[str] = "107_knowledge_disposition"
 
 #: Alembic's version table for the trellion chain, and the schema it lives in.
 VERSION_TABLE: Final[str] = "alembic_version_memory"
